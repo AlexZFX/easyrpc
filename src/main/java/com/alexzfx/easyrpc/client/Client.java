@@ -6,4 +6,9 @@ package com.alexzfx.easyrpc.client;
  * Description : 客户端，代理通过该端发送请求
  */
 public class Client {
+
+    private final int eventLoopGroupSize = 4;
+
+
+
 }
