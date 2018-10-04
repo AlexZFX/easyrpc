@@ -12,4 +12,11 @@ public class RpcResponse {
     private long requestId;
     private Throwable exception;
     private Object result;
+
+    public RpcResponse(long requestId) {
+        this.requestId = requestId;
+    }
+
+    public RpcResponse() {
+    }
 }

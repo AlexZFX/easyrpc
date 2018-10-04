@@ -15,19 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Author : Alex
  * Date : 2018/10/2 19:11
- * Description : 服务端，收到请求后对方法进行本地调用，返回数据
+ * Description : 服务端，收到请求后对方法进行本地调用，返回数据，服务的注册要在此之前或者之后。
  */
 @Slf4j
 public class Server {
 
-    private final int bossEventLoopGroupSize = 1;
-    private final int workerEventLoopGroupSize = 4;
-    private final int defaultPort = 8890;
+    private static final int bossEventLoopGroupSize = 1;
+    private static final int workerEventLoopGroupSize = 4;
+    private static final int defaultPort = 8890;
 
     private int port;
 
     public Server() {
-        this.port = defaultPort;
+        this(defaultPort);
     }
 
     public Server(int port) {
@@ -35,6 +35,7 @@ public class Server {
     }
 
     private void start() {
+
         EventLoopGroup bossEventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(bossEventLoopGroupSize) : new NioEventLoopGroup(bossEventLoopGroupSize);
         EventLoopGroup workerEventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(workerEventLoopGroupSize) : new NioEventLoopGroup(workerEventLoopGroupSize);
         ServerBootstrap serverBootstrap = new ServerBootstrap();

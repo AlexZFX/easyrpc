@@ -15,5 +15,4 @@ import java.lang.annotation.Target;
 //注解的使用地点为 类，接口或enum声明
 @Target(ElementType.TYPE)
 public @interface RpcInterface {
-    String name() default "";
 }

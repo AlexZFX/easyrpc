@@ -69,6 +69,7 @@ public class EtcdRegistry implements IRegistry {
         });
     }
 
+    //注册类名，一个类对应一个client
     @Override
     public void register(String serviceName, int port) throws Exception {
         String strKey = MessageFormat.format("/{0}/{1}/{2}:{3}", ROOTPATH, serviceName, getHostIp(), port);
