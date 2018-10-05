@@ -1,4 +1,4 @@
-package com.alexzfx.easyrpc.client;
+package com.alexzfx.easyrpc.client.netty;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBufAllocator;

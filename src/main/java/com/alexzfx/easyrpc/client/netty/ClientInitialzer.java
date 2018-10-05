@@ -1,4 +1,4 @@
-package com.alexzfx.easyrpc.client;
+package com.alexzfx.easyrpc.client.netty;
 
 import com.alexzfx.easyrpc.protocol.codec.RpcRequestEncoder;
 import com.alexzfx.easyrpc.protocol.codec.RpcResponseDecoder;

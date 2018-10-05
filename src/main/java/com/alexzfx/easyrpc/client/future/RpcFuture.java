@@ -1,4 +1,4 @@
-package com.alexzfx.easyrpc.client;
+package com.alexzfx.easyrpc.client.future;
 
 import com.alexzfx.easyrpc.protocol.entity.RpcResponse;
 import io.netty.util.concurrent.DefaultPromise;

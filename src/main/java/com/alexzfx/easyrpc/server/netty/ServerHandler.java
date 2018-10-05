@@ -1,4 +1,4 @@
-package com.alexzfx.easyrpc.server;
+package com.alexzfx.easyrpc.server.netty;
 
 import com.alexzfx.easyrpc.protocol.entity.RpcRequest;
 import com.alexzfx.easyrpc.protocol.entity.RpcResponse;

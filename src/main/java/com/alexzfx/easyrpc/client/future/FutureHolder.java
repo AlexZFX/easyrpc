@@ -1,4 +1,4 @@
-package com.alexzfx.easyrpc.client;
+package com.alexzfx.easyrpc.client.future;
 
 import io.netty.util.concurrent.FastThreadLocal;
 
@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * Author : Alex
  * Date : 2018/10/3 20:37
- * Description :
+ * Description : 保存client端的请求future
  */
 public class FutureHolder {
 

@@ -1,5 +1,7 @@
-package com.alexzfx.easyrpc.client;
+package com.alexzfx.easyrpc.client.netty;
 
+import com.alexzfx.easyrpc.client.future.FutureHolder;
+import com.alexzfx.easyrpc.client.future.RpcFuture;
 import com.alexzfx.easyrpc.protocol.entity.RpcResponse;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

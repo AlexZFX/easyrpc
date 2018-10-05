@@ -1,4 +1,4 @@
-package com.alexzfx.easyrpc.server;
+package com.alexzfx.easyrpc.server.netty;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -20,24 +20,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Server {
 
-    private static final int bossEventLoopGroupSize = 1;
-    private static final int workerEventLoopGroupSize = 4;
-    private static final int defaultPort = 8890;
+    private static final int DEFAULT_BossEventLoopGroupSize = 1;
+    private static final int DEFAULT_WorkerEventLoopGroupSize = 4;
 
     private int port;
-
-    public Server() {
-        this(defaultPort);
-    }
 
     public Server(int port) {
         this.port = port;
     }
 
-    private void start() {
+    public void start() {
 
-        EventLoopGroup bossEventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(bossEventLoopGroupSize) : new NioEventLoopGroup(bossEventLoopGroupSize);
-        EventLoopGroup workerEventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(workerEventLoopGroupSize) : new NioEventLoopGroup(workerEventLoopGroupSize);
+        EventLoopGroup bossEventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(DEFAULT_BossEventLoopGroupSize) : new NioEventLoopGroup(DEFAULT_BossEventLoopGroupSize);
+        EventLoopGroup workerEventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(DEFAULT_WorkerEventLoopGroupSize) : new NioEventLoopGroup(DEFAULT_WorkerEventLoopGroupSize);
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.group(bossEventLoopGroup, workerEventLoopGroup)
                 .channel(Epoll.isAvailable() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
