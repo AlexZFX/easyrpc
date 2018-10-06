@@ -1,8 +1,6 @@
 package com.alexzfx.easyrpc.client.future;
 
-import io.netty.util.concurrent.FastThreadLocal;
-
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Author : Alex
@@ -11,17 +9,27 @@ import java.util.HashMap;
  */
 public class FutureHolder {
 
-    private static FastThreadLocal<HashMap<Long, RpcFuture>> futureHolder = new FastThreadLocal<>();
+//    private static FastThreadLocal<HashMap<Long, RpcFuture>> futureHolder = new FastThreadLocal<>();
+//
+//    public static void registerFuture(long requestId, RpcFuture future) {
+//        if (futureHolder.get() == null) {
+//            futureHolder.set(new HashMap<>());
+//        }
+//        futureHolder.get().put(requestId, future);
+//    }
+//
+//    public static RpcFuture getAndRemoveFuture(long requestId) {
+//        return futureHolder.get().remove(requestId);
+//    }
+
+    private static ConcurrentHashMap<Long, RpcFuture> futureHolder = new ConcurrentHashMap<>();
 
     public static void registerFuture(long requestId, RpcFuture future) {
-        if (futureHolder.get() == null) {
-            futureHolder.set(new HashMap<>());
-        }
-        futureHolder.get().put(requestId, future);
+        futureHolder.put(requestId, future);
     }
 
     public static RpcFuture getAndRemoveFuture(long requestId) {
-        return futureHolder.get().remove(requestId);
+        return futureHolder.remove(requestId);
     }
 
 

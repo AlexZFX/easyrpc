@@ -5,7 +5,9 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.*;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -42,14 +44,15 @@ public class Client {
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
-                    .handler(new ClientHander())
+                    .channel(Epoll.isAvailable() ? EpollSocketChannel.class : NioSocketChannel.class)
+                    .handler(new ClientInitialzer())
                     .connect(host, port)
                     .addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
                             channel = future.channel();
-                            log.info("start a client at " + host + ":" + port);
+                            log.info("start a client to " + host + ":" + port);
                             channel.closeFuture().addListener((ChannelFutureListener) closefuture -> {
-                                log.info("stop a client at " + host + ":" + port);
+                                log.info("stop the client to " + host + ":" + port);
                             });
                         } else {
                             log.error("start a Client failed", future.cause());
@@ -65,7 +68,7 @@ public class Client {
             return channel;
         } else {
             channelFuture = connectChannel();
-            return channel;
+            return channelFuture.channel();
         }
     }
 

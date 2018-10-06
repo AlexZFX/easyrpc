@@ -27,7 +27,7 @@ import java.util.concurrent.Executors;
 public class EtcdRegistry implements IRegistry {
 
     private static final String ROOTPATH = "easyrpc";
-    private static final String DEFAULT_ADDRESS = "127.0.0.1:2379";
+    private static final String DEFAULT_ADDRESS = "http://127.0.0.1:2379";
     private static final int LeaseTTL = 60;
 
     // 理解为租约，用于设置超时时间
@@ -72,7 +72,7 @@ public class EtcdRegistry implements IRegistry {
     //注册类名，一个类对应一个client
     @Override
     public void register(String serviceName, int port) throws Exception {
-        String strKey = MessageFormat.format("/{0}/{1}/{2}:{3}", ROOTPATH, serviceName, getHostIp(), port);
+        String strKey = MessageFormat.format("/{0}/{1}/{2}:{3}", ROOTPATH, serviceName, getHostIp(), String.valueOf(port));
         ByteSequence key = ByteSequence.fromString(strKey);
         // 目前只需要创建这个key,对应的value暂不使用,先留空
         ByteSequence val = ByteSequence.fromString("");
@@ -88,6 +88,7 @@ public class EtcdRegistry implements IRegistry {
     @Override
     public List<EndPoint> find(String serviceName) throws Exception {
         String strkey = MessageFormat.format("/{0}/{1}", ROOTPATH, serviceName);
+        log.info("start to find service, Name :" + strkey);
         ByteSequence key = ByteSequence.fromString(strkey);
         GetResponse response = kv.get(key, GetOption.newBuilder().withPrefix(key).build()).get();
         List<EndPoint> list = new ArrayList<>();

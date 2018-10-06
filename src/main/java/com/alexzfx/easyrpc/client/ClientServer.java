@@ -28,14 +28,13 @@ public class ClientServer {
 
     private static ConcurrentHashMap<String, Client> clientMap = new ConcurrentHashMap<>();
 
-    private int post;
-
     public ClientServer() {
         this.registry = new EtcdRegistry();
 //        this.clientMap = new ConcurrentHashMap<>();
     }
 
     public void start() {
+        //TODO
         Reflections reflections = new Reflections();
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(RpcInterface.class);
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(4) : new NioEventLoopGroup(4);
@@ -47,7 +46,7 @@ public class ClientServer {
                     clientMap.put(clazz.getName(), new Client(endPoints.get(0).getHost(), endPoints.get(0).getPort(), eventLoopGroup));
                 }
             } catch (Exception e) {
-                log.error("");
+                log.error("registry find error", e);
             }
         });
     }

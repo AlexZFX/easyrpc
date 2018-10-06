@@ -27,6 +27,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
+        log.info("recieve a request id : " + msg.getRequestId());
         RpcResponse rpcResponse = getResponse(msg);
         ctx.writeAndFlush(rpcResponse).addListener((GenericFutureListener<ChannelFuture>) future -> {
             if (!future.isSuccess()) {
