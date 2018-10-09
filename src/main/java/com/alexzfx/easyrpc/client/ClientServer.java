@@ -28,14 +28,16 @@ public class ClientServer {
 
     private static ConcurrentHashMap<String, Client> clientMap = new ConcurrentHashMap<>();
 
-    public ClientServer() {
+    private final String packagePath;
+
+    public ClientServer(String packagePath) {
+        this.packagePath = packagePath;
         this.registry = new EtcdRegistry();
 //        this.clientMap = new ConcurrentHashMap<>();
     }
 
     public void start() {
-        //TODO
-        Reflections reflections = new Reflections();
+        Reflections reflections = new Reflections(packagePath);
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(RpcInterface.class);
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(4) : new NioEventLoopGroup(4);
         classes.forEach(clazz -> {

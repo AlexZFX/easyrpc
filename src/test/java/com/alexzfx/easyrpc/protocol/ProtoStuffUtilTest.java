@@ -30,4 +30,9 @@ public class ProtoStuffUtilTest {
         RpcResponse r2 = ProtoStuffUtil.deserializer(ProtoStuffUtil.serializer(rpcResponse), RpcResponse.class);
         r2.getException().printStackTrace();
     }
+
+    @Test
+    public void getPath() {
+        System.out.println(System.getProperty("user.dir"));
+    }
 }

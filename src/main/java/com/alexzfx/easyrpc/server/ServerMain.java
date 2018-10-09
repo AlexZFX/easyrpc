@@ -23,18 +23,21 @@ public class ServerMain {
 
     private int port;
 
-    public ServerMain() {
+    private final String packagePath;
+
+    public ServerMain(String packagePath) {
+        this.packagePath = packagePath;
         this.port = System.getProperty("server.port") == null ? DEFAULT_SERVER_PORT : Integer.parseInt(System.getProperty("server.port"));
         this.registry = new EtcdRegistry();
     }
 
-    public ServerMain(IRegistry registry) {
+    public ServerMain(IRegistry registry, String packagePath) {
         this.registry = registry;
+        this.packagePath = packagePath;
     }
 
     public void start() {
-        //TODO
-        Reflections reflections = new Reflections();
+        Reflections reflections = new Reflections(packagePath);
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(RpcService.class);
         classes.forEach(clazz -> {
             try {
@@ -43,7 +46,9 @@ public class ServerMain {
                 log.error("register service failed : " + e.getLocalizedMessage(), e);
             }
         });
-        Server server = new Server(port);
-        server.start();
+        new Thread(() -> {
+            Server server = new Server(port);
+            server.start();
+        }).start();
     }
 }
