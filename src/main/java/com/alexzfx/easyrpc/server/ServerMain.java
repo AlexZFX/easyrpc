@@ -4,6 +4,7 @@ import com.alexzfx.easyrpc.commom.annotation.RpcService;
 import com.alexzfx.easyrpc.commom.etcd.EtcdRegistry;
 import com.alexzfx.easyrpc.commom.etcd.IRegistry;
 import com.alexzfx.easyrpc.server.netty.Server;
+import com.alexzfx.easyrpc.server.netty.ServerHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 
@@ -25,6 +26,7 @@ public class ServerMain {
 
     private final String packagePath;
 
+
     public ServerMain(String packagePath) {
         this(packagePath, new EtcdRegistry());
     }
@@ -40,14 +42,22 @@ public class ServerMain {
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(RpcService.class);
         classes.forEach(clazz -> {
             try {
-                registry.register(clazz.getName(), port);
+                Class<?>[] interfaces = clazz.getInterfaces();
+                String clazzName = clazz.getName();
+                if (interfaces != null && interfaces.length > 0) {
+                    clazzName = interfaces[0].getName();
+                }
+                //注册的是 接口名 和 服务实例
+                ServerHandler.clazzMap.put(clazzName, clazz.newInstance());
+                registry.register(clazzName, port);
             } catch (Exception e) {
                 log.error("register service failed : " + e.getLocalizedMessage(), e);
             }
         });
-        new Thread(() -> {
-            Server server = new Server(port);
-            server.start();
-        }).start();
+//      //新开线程的话会程序会退出
+//        new Thread(() -> {
+        Server server = new Server(port);
+        server.start();
+//        }).start();
     }
 }

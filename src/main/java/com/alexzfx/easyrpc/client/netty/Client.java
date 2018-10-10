@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * Author : Alex
  * Date : 2018/10/2 19:34
  * Description : 客户端，代理通过该端发送请求，考虑保持长连接，打算一个client与一个地址绑定
+ * //TODO 心跳设置，当服务不可用时删除clientMap中的对应endpoint
  */
 @Slf4j
 public class Client {

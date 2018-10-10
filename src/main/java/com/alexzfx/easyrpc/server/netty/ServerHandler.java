@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ChannelHandler.Sharable
 public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
 
-    private ConcurrentHashMap<String, Object> clazzMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, Object> clazzMap = new ConcurrentHashMap<>();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, RpcRequest msg) throws Exception {
@@ -58,7 +58,6 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
                 clazzMap.put(rpcRequest.getClassName(), clazz.newInstance());
                 c = clazzMap.get(rpcRequest.getClassName());
             }
-
             String methodName = rpcRequest.getServiceName();
             Class<?>[] parameterTypes = rpcRequest.getParameterTypes();
             Object[] parameters = rpcRequest.getParameters();

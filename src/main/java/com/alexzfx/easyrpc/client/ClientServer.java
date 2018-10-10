@@ -54,8 +54,13 @@ public class ClientServer {
             try {
                 //拿到当前仍在注册中心中的相应服务列表
                 // TODO 删除掉对应失效的endpoint
-                List<EndPoint> list = registry.find(clazz.getName());
-                serviceMap.put(clazz.getName(), list);
+                Class<?>[] interfaces = clazz.getInterfaces();
+                String className = clazz.getName();
+                if (interfaces != null && interfaces.length > 0) {
+                    className = interfaces[0].getName();
+                }
+                List<EndPoint> list = registry.find(className);
+                serviceMap.put(className, list);
                 list.forEach(endPoint -> {
                     if (clientMap.get(endPoint) == null) {
                         Client client = new Client(endPoint.getHost(), endPoint.getPort(), eventLoopGroup);

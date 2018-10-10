@@ -13,6 +13,7 @@ import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author : Alex
@@ -24,7 +25,13 @@ public class ProxyIntercepter implements MethodInterceptor {
     @Override
     public Object intercept(Object o, Method method, Object[] parameters, MethodProxy methodProxy) throws Throwable {
         RpcRequest rpcRequest = new RpcRequest();
-        rpcRequest.setClassName(method.getDeclaringClass().getName());
+        Class clazz = method.getDeclaringClass();
+        Class<?>[] interfaces = clazz.getInterfaces();
+        String clazzName = clazz.getName();
+        if (interfaces != null && interfaces.length > 0) {
+            clazzName = interfaces[0].getName();
+        }
+        rpcRequest.setClassName(clazzName);
         rpcRequest.setServiceName(method.getName());
         rpcRequest.setParameterTypes(method.getParameterTypes());
         rpcRequest.setParameters(parameters);
@@ -46,7 +53,7 @@ public class ProxyIntercepter implements MethodInterceptor {
                     }
                 });
             }
-            RpcResponse rpcResponse = rpcFuture.get();
+            RpcResponse rpcResponse = rpcFuture.get(5, TimeUnit.SECONDS);
             if (rpcResponse.getException() == null) {
                 return rpcResponse.getResult();
             } else {
