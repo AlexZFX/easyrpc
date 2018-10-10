@@ -2,6 +2,23 @@
 
 完整介绍内容回头再写。。
 
+```
+git clone https://github.com/AlexZFX/easyrpc
+```
+Open the package and install the project into local repository 
+```
+mvn install
+```
+Add dependency
+```
+<dependency>
+    <groupId>com.alexzfx</groupId>
+    <artifactId>easyrpc</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
+
 Define service interface
 
 ```
