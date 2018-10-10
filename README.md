@@ -18,6 +18,9 @@ Add dependency
 </dependency>
 ```
 
+Open your local [etcd]{https://github.com/etcd-io/etcd} client at port 2379
+If you don't have, you can download it [here]{https://github.com/etcd-io/etcd/releases}
+
 
 Define service interface
 
