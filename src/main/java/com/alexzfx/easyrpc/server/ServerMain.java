@@ -26,14 +26,13 @@ public class ServerMain {
     private final String packagePath;
 
     public ServerMain(String packagePath) {
-        this.packagePath = packagePath;
-        this.port = System.getProperty("server.port") == null ? DEFAULT_SERVER_PORT : Integer.parseInt(System.getProperty("server.port"));
-        this.registry = new EtcdRegistry();
+        this(packagePath, new EtcdRegistry());
     }
 
-    public ServerMain(IRegistry registry, String packagePath) {
+    public ServerMain(String packagePath, IRegistry registry) {
         this.registry = registry;
         this.packagePath = packagePath;
+        this.port = System.getProperty("server.port") == null ? DEFAULT_SERVER_PORT : Integer.parseInt(System.getProperty("server.port"));
     }
 
     public void start() {

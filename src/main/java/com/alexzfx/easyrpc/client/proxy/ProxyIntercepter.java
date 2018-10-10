@@ -5,6 +5,7 @@ import com.alexzfx.easyrpc.client.future.FutureHolder;
 import com.alexzfx.easyrpc.client.future.RpcFuture;
 import com.alexzfx.easyrpc.client.netty.Client;
 import com.alexzfx.easyrpc.protocol.entity.RpcRequest;
+import com.alexzfx.easyrpc.protocol.entity.RpcResponse;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,9 @@ public class ProxyIntercepter implements MethodInterceptor {
         rpcRequest.setServiceName(method.getName());
         rpcRequest.setParameterTypes(method.getParameterTypes());
         rpcRequest.setParameters(parameters);
-        Client client = ClientServer.getClientMap().get(rpcRequest.getClassName());
+
+        Client client = ClientServer.getClient(rpcRequest.getClassName());
+
         RpcFuture rpcFuture;
         if (client != null) {
             ChannelFuture channelFuture = client.connectChannel();
@@ -43,7 +46,12 @@ public class ProxyIntercepter implements MethodInterceptor {
                     }
                 });
             }
-            return rpcFuture.get().getResult();
+            RpcResponse rpcResponse = rpcFuture.get();
+            if (rpcResponse.getException() == null) {
+                return rpcResponse.getResult();
+            } else {
+                throw rpcResponse.getException();
+            }
         } else {
             log.error("no rpcService is available :" + rpcRequest.getClassName());
             return null;

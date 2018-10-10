@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +35,17 @@ public class ServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
                 log.error(future.cause().getLocalizedMessage());
             }
         });
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (cause instanceof IOException) {
+            if (cause.getLocalizedMessage().equals("远程主机强迫关闭了一个现有的连接。")) {
+                log.info("一个客户端连接断开。");
+                return;
+            }
+        }
+        super.exceptionCaught(ctx, cause);
     }
 
     private RpcResponse getResponse(RpcRequest rpcRequest) {

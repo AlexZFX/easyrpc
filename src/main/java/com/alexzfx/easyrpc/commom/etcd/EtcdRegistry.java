@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 public class EtcdRegistry implements IRegistry {
 
     private static final String ROOTPATH = "easyrpc";
+    //注册中心地址
     private static final String DEFAULT_ADDRESS = "http://127.0.0.1:2379";
     private static final int LeaseTTL = 60;
 
@@ -43,6 +44,9 @@ public class EtcdRegistry implements IRegistry {
 
     public EtcdRegistry(String registryAddress) {
         registryAddress = registryAddress != null ? registryAddress : DEFAULT_ADDRESS;
+        if (System.getProperty("etcd.url") != null) {
+            registryAddress = System.getProperty("etcd.url");
+        }
         Client client = Client.builder().endpoints(registryAddress).build();
         this.lease = client.getLeaseClient();
         this.kv = client.getKVClient();

@@ -13,8 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Author : Alex
@@ -26,34 +30,52 @@ public class ClientServer {
 
     private IRegistry registry;
 
-    private static ConcurrentHashMap<String, Client> clientMap = new ConcurrentHashMap<>();
+    //设置一个endpoint使用一个client，netty高效理论上满足使用
+    private static ConcurrentHashMap<EndPoint, Client> clientMap = new ConcurrentHashMap<>();
+
+    private static ConcurrentHashMap<String, List<EndPoint>> serviceMap = new ConcurrentHashMap<>();
 
     private final String packagePath;
+
+    private static final Random random = new Random();
 
     public ClientServer(String packagePath) {
         this.packagePath = packagePath;
         this.registry = new EtcdRegistry();
-//        this.clientMap = new ConcurrentHashMap<>();
     }
 
     public void start() {
         Reflections reflections = new Reflections(packagePath);
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(RpcInterface.class);
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(4) : new NioEventLoopGroup(4);
-        classes.forEach(clazz -> {
+        //定时任务线程池，定时更新服务列表，设置为5分钟
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
+        classes.forEach(clazz -> executorService.scheduleAtFixedRate(() -> {
             try {
-                List<EndPoint> endPoints = registry.find(clazz.getName());
-                //没做负载均衡，只使用了找到的第一个服务
-                if (!endPoints.isEmpty()) {
-                    clientMap.put(clazz.getName(), new Client(endPoints.get(0).getHost(), endPoints.get(0).getPort(), eventLoopGroup));
-                }
+                //拿到当前仍在注册中心中的相应服务列表
+                // TODO 删除掉对应失效的endpoint
+                List<EndPoint> list = registry.find(clazz.getName());
+                serviceMap.put(clazz.getName(), list);
+                list.forEach(endPoint -> {
+                    if (clientMap.get(endPoint) == null) {
+                        Client client = new Client(endPoint.getHost(), endPoint.getPort(), eventLoopGroup);
+                        clientMap.put(endPoint, client);
+                    }
+                });
             } catch (Exception e) {
-                log.error("registry find error", e);
+                e.printStackTrace();
             }
-        });
+        }, 0, 3 * 60, TimeUnit.SECONDS));
+
     }
 
-    public static ConcurrentHashMap<String, Client> getClientMap() {
-        return clientMap;
+    public static Client getClient(String serviceName) {
+        List<EndPoint> endPoints = serviceMap.get(serviceName);
+        // 简单的负载均衡，只使用了随机选择
+        if (endPoints != null) {
+            EndPoint endPoint = endPoints.get(random.nextInt(endPoints.size()));
+            return clientMap.get(endPoint);
+        }
+        return null;
     }
 }
