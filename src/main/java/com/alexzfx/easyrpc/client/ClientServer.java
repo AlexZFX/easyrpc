@@ -48,7 +48,7 @@ public class ClientServer {
         Reflections reflections = new Reflections(packagePath);
         Set<Class<?>> classes = reflections.getTypesAnnotatedWith(RpcInterface.class);
         EventLoopGroup eventLoopGroup = Epoll.isAvailable() ? new EpollEventLoopGroup(4) : new NioEventLoopGroup(4);
-        //定时任务线程池，定时更新服务列表，设置为5分钟
+        //定时任务线程池，定时更新服务列表，设置为3分钟
         ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(2);
         classes.forEach(clazz -> executorService.scheduleAtFixedRate(() -> {
             try {
@@ -63,6 +63,7 @@ public class ClientServer {
                 serviceMap.put(className, list);
                 list.forEach(endPoint -> {
                     if (clientMap.get(endPoint) == null) {
+                        //所有的Client共用一个EventLoopGroup
                         Client client = new Client(endPoint.getHost(), endPoint.getPort(), eventLoopGroup);
                         clientMap.put(endPoint, client);
                     }

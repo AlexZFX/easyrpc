@@ -20,8 +20,7 @@ import java.util.concurrent.Executors;
 /**
  * Author : Alex
  * Date : 2018/10/1 19:16
- * Description :
- * etcd本质上是一个有序的K-V存储。
+ * Description : etcd本质上是一个有序的K-V存储。
  */
 @Slf4j
 public class EtcdRegistry implements IRegistry {

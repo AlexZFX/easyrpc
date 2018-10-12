@@ -1,6 +1,6 @@
 ## EasyRPC
 
-完整介绍内容回头再写。。
+[项目完整介绍博客](http://www.alexzfx.com/2018/10/11/%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84RPC%E6%A1%86%E6%9E%B6/)
 
 ```
 git clone https://github.com/AlexZFX/easyrpc
@@ -18,8 +18,8 @@ Add dependency
 </dependency>
 ```
 
-Open your local [etcd](https://github.com/etcd-io/etcd) client at port 2379
-If you don't have, you can download it [here](https://github.com/etcd-io/etcd/releases)
+**Open your local [etcd](https://github.com/etcd-io/etcd) client at port 2379.    
+If you don't have, you can download it [here](https://github.com/etcd-io/etcd/releases)**
 
 
 Define service interface

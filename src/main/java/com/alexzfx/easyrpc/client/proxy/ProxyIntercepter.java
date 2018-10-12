@@ -27,6 +27,7 @@ public class ProxyIntercepter implements MethodInterceptor {
         RpcRequest rpcRequest = new RpcRequest();
         Class clazz = method.getDeclaringClass();
         Class<?>[] interfaces = clazz.getInterfaces();
+        //存在接口时使用的是接口名称
         String clazzName = clazz.getName();
         if (interfaces != null && interfaces.length > 0) {
             clazzName = interfaces[0].getName();
@@ -53,6 +54,7 @@ public class ProxyIntercepter implements MethodInterceptor {
                     }
                 });
             }
+            //这里没有用listener & getNow的方式获取主要是考虑客户端本身非异步的情形，同时是为了简便实现。
             RpcResponse rpcResponse = rpcFuture.get(5, TimeUnit.SECONDS);
             if (rpcResponse.getException() == null) {
                 return rpcResponse.getResult();

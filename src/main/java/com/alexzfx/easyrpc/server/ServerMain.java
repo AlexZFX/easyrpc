@@ -45,9 +45,11 @@ public class ServerMain {
                 Class<?>[] interfaces = clazz.getInterfaces();
                 String clazzName = clazz.getName();
                 if (interfaces != null && interfaces.length > 0) {
+                    //简单实现，所以只获取了第一个interface的name，实际上并不准确，可能有误。
                     clazzName = interfaces[0].getName();
                 }
                 //注册的是 接口名 和 服务实例
+                //clazzMap是用来保存一个实例对象，相当于服务端的单例
                 ServerHandler.clazzMap.put(clazzName, clazz.newInstance());
                 registry.register(clazzName, port);
             } catch (Exception e) {
