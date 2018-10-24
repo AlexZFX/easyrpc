@@ -11,12 +11,15 @@ import java.util.HashMap;
  */
 public class FutureHolder {
 
-    private static FastThreadLocal<HashMap<Long, RpcFuture>> futureHolder = new FastThreadLocal<>();
+    private static final FastThreadLocal<HashMap<Long, RpcFuture>> futureHolder = new FastThreadLocal<HashMap<Long, RpcFuture>>() {
+        @Override
+        protected HashMap<Long, RpcFuture> initialValue() {
+            return new HashMap<>();
+        }
+    };
+
 
     public static void registerFuture(long requestId, RpcFuture future) {
-        if (futureHolder.get() == null) {
-            futureHolder.set(new HashMap<>());
-        }
         futureHolder.get().put(requestId, future);
     }
 
