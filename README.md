@@ -1,6 +1,6 @@
 ## EasyRPC
 
-[项目完整介绍博客](http://www.alexzfx.com/2018/10/11/%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84RPC%E6%A1%86%E6%9E%B6/)
+[项目完整介绍博客](https://juejin.cn/post/6844903692634685447)
 
 ```
 git clone https://github.com/AlexZFX/easyrpc
